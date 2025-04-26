@@ -5,6 +5,7 @@ import pandas as pd
 from PIL import Image
 from random import randint
 from torch.utils.data import Dataset
+from uitls import get_transform
 
 random.seed(42)
 
@@ -18,6 +19,8 @@ class FlickrDataset(Dataset):
         self.db_size = args.db_size
         
         self.train_data, self.test_data, self.db_data = self.split_images()
+        self.train_transform = get_transform("train")
+        self.transform = get_transform("other")
         
     def split_images(self):
         dir = str(self.args.root_data) + "/flickr30k.csv"
@@ -53,6 +56,7 @@ class FlickrDataset(Dataset):
             
             positive_sample = os.path.join(self.args.root_data, 'images', image_name)
             pos_img = Image.open(positive_sample).convert("RGB")
+            pos_img = self.train_transform(pos_img)
             
             posible_list = list(range(len(self.train_size)))
             posible_list.remove(idx)
@@ -60,6 +64,7 @@ class FlickrDataset(Dataset):
             negative_name = self.train_data[negative_idx][0]
             negative_sample = os.path.join(self.args.root_data, 'images', negative_name)
             neg_img = Image.open(negative_sample).convert("RGB")
+            neg_img = self.train_transform(neg_img)
             
             caption = self.train_data[idx][2]
             
@@ -74,10 +79,21 @@ class FlickrDataset(Dataset):
             image_name = self.test_data[idx][0]
             positive_sample = os.path.join(self.args.root_data, 'images', image_name)
             pos_img = Image.open(positive_sample).convert("RGB")
-            caption = self.train_data[idx][2]
+            pos_img = self.transform(pos_img)
+            
+            posible_list = list(range(len(self.test_size)))
+            posible_list.remove(idx)
+            negative_idx = posible_list[randint(0, len(posible_list)-1)]
+            negative_name = self.test_data[negative_idx][0]
+            negative_sample = os.path.join(self.args.root_data, 'images', negative_name)
+            neg_img = Image.open(negative_sample).convert("RGB")
+            neg_img = self.transform(neg_img)
+            
+            caption = self.test_data[idx][2]
             
             sample = {
                 "pos_img": pos_img,
+                "neg_img": neg_img,
                 "caption": caption
             }
             return sample
