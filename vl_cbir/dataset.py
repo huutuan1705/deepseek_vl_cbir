@@ -76,7 +76,7 @@ class FlickrDataset(Dataset):
             pos_img = Image.open(positive_sample).convert("RGB")
             pos_img = self.train_transform(pos_img)
             
-            posible_list = list(range(len(self.train_size)))
+            posible_list = list(range(self.train_size))
             posible_list.remove(idx)
             negative_idx = posible_list[randint(0, len(posible_list)-1)]
             negative_name = self.train_data[negative_idx][0]
@@ -99,7 +99,7 @@ class FlickrDataset(Dataset):
             pos_img = Image.open(positive_sample).convert("RGB")
             pos_img = self.transform(pos_img)
             
-            posible_list = list(range(len(self.test_size)))
+            posible_list = list(range(self.test_size))
             posible_list.remove(idx)
             negative_idx = posible_list[randint(0, len(posible_list)-1)]
             negative_name = self.test_data[negative_idx][0]
