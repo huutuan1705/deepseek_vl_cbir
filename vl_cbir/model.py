@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
-
 class MLPProjection(nn.Module):
     def __init__(self, input_dim=768, output_dim=64):
         super(MLPProjection, self).__init__()

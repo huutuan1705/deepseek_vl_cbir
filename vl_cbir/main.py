@@ -19,7 +19,8 @@ def evaluate(model, test_loader):
     model.eval()
     test_cosine = []
     with torch.no_grad():
-        for _, (pos_pixel_values, neg_pixel_values, input_ids, attention_mask) in enumerate(tqdm(test_loader)):
+        for _, batch in enumerate(tqdm(test_loader)):
+            pos_pixel_values, neg_pixel_values, input_ids, attention_mask = batch[0], batch[1], batch[2], batch[3] 
             pos_pixel_values = pos_pixel_values.to(device)
             neg_pixel_values = neg_pixel_values.to(device)
             input_ids = input_ids.to(device)
