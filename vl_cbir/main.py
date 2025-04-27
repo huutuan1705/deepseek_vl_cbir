@@ -27,7 +27,7 @@ def evaluate(model, test_loader):
             attention_mask = attention_mask.to(device)
             image_proj, _, text_proj = model(pos_pixel_values, neg_pixel_values, input_ids, attention_mask)
             cosine_similarity_mean = F.cosine_similarity(image_proj, text_proj, dim=1)
-            test_cosine.append(cosine_similarity_mean)
+            test_cosine.append(cosine_similarity_mean.mean())
             
     cosine_mean = sum(test_cosine) / len(test_cosine)
     
