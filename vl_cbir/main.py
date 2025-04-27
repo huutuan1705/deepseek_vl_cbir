@@ -9,7 +9,10 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.nn import TripletMarginLoss
 from uitls import get_dataloader
 from model import VLM
+from transformers import SiglipVisionModel, AutoModel
 
+vision_encoder = SiglipVisionModel.from_pretrained("google/siglip-base-patch16-224")
+text_encoder = AutoModel.from_pretrained("microsoft/deberta-v3-base")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def evaluate(model, test_loader):
@@ -46,7 +49,7 @@ if __name__ == "__main__":
     
     args = parsers.parse_args()
     train_loader, test_loader, search_loader = get_dataloader(args)
-    model = VLM(args)
+    model = VLM(args, vision_encoder, text_encoder)
     model.to(device)
     
     optimizer = AdamW(model.parameters(), lr=args.lr)
@@ -59,7 +62,7 @@ if __name__ == "__main__":
         model.train()
         losses = []
         cosine_max = -100000
-        for _, (pos_pixel_values, neg_pixel_values, input_ids, attention_mask) in enumerate(tqdm(train_loader)):
+        for _, (pos_pixel_values, neg_pixel_values, input_ids, attention_mask) in tqdm(enumerate(train_loader)):
             model.train()
             pos_pixel_values = pos_pixel_values.to(device)
             neg_pixel_values = neg_pixel_values.to(device)
