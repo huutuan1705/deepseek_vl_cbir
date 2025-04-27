@@ -1,4 +1,3 @@
-import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from transformers import SiglipProcessor, AutoTokenizer
 
@@ -33,22 +32,4 @@ def get_dataloader(args):
     search_loader = DataLoader(dataset_search, batch_size=args.batch_size, num_workers=args.threads, collate_fn=collate_fn)
     
     return train_loader, test_loader, search_loader
-
-def get_transform(mode):
-    if mode == 'train':
-        transform_list = [
-            transforms.Resize(224),
-            transforms.RandomHorizontalFlip(0.5),
-            transforms.RandomRotation(20),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        ]
-    else:
-        transform_list = [
-            transforms.Resize(224),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        ]
-        
-    return transforms.Compose(transform_list)
 
