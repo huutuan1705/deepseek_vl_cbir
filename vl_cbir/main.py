@@ -1,5 +1,6 @@
 import torch
 import argparse
+import torch.nn.functional as F 
 
 from tqdm import tqdm
 from torch.cuda.amp import GradScaler
@@ -21,7 +22,7 @@ def evaluate(model, test_loader):
             input_ids = input_ids.to(device)
             attention_mask = attention_mask.to(device)
             image_proj, _, text_proj = model(pos_pixel_values, neg_pixel_values, input_ids, attention_mask)
-            cosine_similarity_mean = (image_proj*text_proj).sum(dim=1).mean()
+            cosine_similarity_mean = F.cosine_similarity(image_proj, text_proj, dim=1)
             test_cosine.append(cosine_similarity_mean)
             
     cosine_mean = sum(test_cosine) / len(test_cosine)

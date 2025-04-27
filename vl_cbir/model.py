@@ -6,7 +6,7 @@ from transformers import SiglipVisionModel, AutoModel
 
 class MLPProjection(nn.Module):
     def __init__(self, input_dim=768, output_dim=64):
-        super(MLPProjection).__init__()
+        super(MLPProjection, self).__init__()
         self.linear = nn.Linear(input_dim, output_dim)
         
     def forward(self, x):
