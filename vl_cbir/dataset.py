@@ -23,7 +23,7 @@ class FlickrDataset(Dataset):
         self.transform = get_transform("other")
         
     def split_images(self):
-        dir = str(self.args.root_data) + "/flickr30k.csv"
+        dir = str(self.args.root_data) + "/results.csv"
         data_csv = pd.read_csv(dir, delimiter='|')
         data_array = data_csv.to_numpy()
         
@@ -54,7 +54,7 @@ class FlickrDataset(Dataset):
             # [image_name, comment_number, comment]
             image_name = self.train_data[idx][0]
             
-            positive_sample = os.path.join(self.args.root_data, 'images', image_name)
+            positive_sample = os.path.join(self.args.root_data, 'flickr30k_images', image_name)
             pos_img = Image.open(positive_sample).convert("RGB")
             pos_img = self.train_transform(pos_img)
             
@@ -62,7 +62,7 @@ class FlickrDataset(Dataset):
             posible_list.remove(idx)
             negative_idx = posible_list[randint(0, len(posible_list)-1)]
             negative_name = self.train_data[negative_idx][0]
-            negative_sample = os.path.join(self.args.root_data, 'images', negative_name)
+            negative_sample = os.path.join(self.args.root_data, 'flickr30k_images', negative_name)
             neg_img = Image.open(negative_sample).convert("RGB")
             neg_img = self.train_transform(neg_img)
             
