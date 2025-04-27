@@ -41,6 +41,7 @@ if __name__ == "__main__":
     parsers.add_argument('--train_size', type=int, default=15000)
     parsers.add_argument('--test_size', type=int, default=4000)
     parsers.add_argument('--db_size', type=int, default=12783)
+    parsers.add_argument('--output_dim', type=int, default=64)
     
     args = parsers.parse_args()
     train_loader, test_loader, search_loader = get_dataloader(args)
