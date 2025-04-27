@@ -38,6 +38,10 @@ if __name__ == "__main__":
     parsers.add_argument('--t_max', type=int, default=10)
     parsers.add_argument('--root_data', type=str, default='./../')
     
+    parsers.add_argument('--train_size', type=int, default=15000)
+    parsers.add_argument('--test_size', type=int, default=4000)
+    parsers.add_argument('--db_size', type=int, default=12783)
+    
     args = parsers.parse_args()
     train_loader, test_loader, search_loader = get_dataloader(args)
     model = VLM(args)
