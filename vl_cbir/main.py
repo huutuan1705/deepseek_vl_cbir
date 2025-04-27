@@ -82,7 +82,7 @@ if __name__ == "__main__":
         cosine_mean = evaluate(model, test_loader)   
         loss_mean = sum(losses) / len(losses)
         print('Training loss:       {:.4f}'.format(loss_mean))
-        print('Test Cosine mean:    {:.4f}'.format(cosine_mean))
+        print('Test Cosine mean:    {:.4f}'.format(cosine_mean.item()))
         
         if cosine_mean >= cosine_max:
             cosine_max = cosine_mean
