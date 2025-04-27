@@ -5,7 +5,7 @@ import pandas as pd
 from PIL import Image
 from random import randint
 from torch.utils.data import Dataset
-from uitls import get_transform
+from model.uitls import get_transform
 
 random.seed(42)
 
