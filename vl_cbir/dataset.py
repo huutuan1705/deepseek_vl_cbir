@@ -34,7 +34,7 @@ class FlickrDataset(Dataset):
         self.mode = mode
         self.train_size = args.train_size
         self.test_size = args.test_size
-        self.db_size = args.db_size
+        self.db_size = 31783 - args.train_size - args.test_size
         
         self.train_data, self.test_data, self.db_data = self.split_images()
         # self.train_transform = get_transform("train")
