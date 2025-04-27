@@ -28,9 +28,9 @@ def get_dataloader(args):
     dataset_test = FlickrDataset(args, mode="test")
     dataset_search = FlickrDataset(args, mode="search")
     
-    train_loader = DataLoader(dataset_train, batch_size=args.batch_size, collate_fn=collate_fn)
-    test_loader = DataLoader(dataset_test, batch_size=args.batch_size, collate_fn=collate_fn)
-    search_loader = DataLoader(dataset_search, batch_size=args.batch_size, collate_fn=collate_fn)
+    train_loader = DataLoader(dataset_train, batch_size=args.batch_size, num_workers=args.threads, collate_fn=collate_fn)
+    test_loader = DataLoader(dataset_test, batch_size=args.batch_size, num_workers=args.threads, collate_fn=collate_fn)
+    search_loader = DataLoader(dataset_search, batch_size=args.batch_size, num_workers=args.threads, collate_fn=collate_fn)
     
     return train_loader, test_loader, search_loader
 
