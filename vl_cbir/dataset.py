@@ -95,7 +95,7 @@ class FlickrDataset(Dataset):
         
         if self.mode == "test" or self.mode == "search":
             image_name = self.test_data[idx][0]
-            positive_sample = os.path.join(self.args.root_data, 'images', image_name)
+            positive_sample = os.path.join(self.args.root_data, 'flickr30k_images', image_name)
             pos_img = Image.open(positive_sample).convert("RGB")
             # pos_img = self.transform(pos_img)
             
@@ -103,7 +103,7 @@ class FlickrDataset(Dataset):
             posible_list.remove(idx)
             negative_idx = posible_list[randint(0, len(posible_list)-1)]
             negative_name = self.test_data[negative_idx][0]
-            negative_sample = os.path.join(self.args.root_data, 'images', negative_name)
+            negative_sample = os.path.join(self.args.root_data, 'flickr30k_images', negative_name)
             neg_img = Image.open(negative_sample).convert("RGB")
             # neg_img = self.transform(neg_img)
             
