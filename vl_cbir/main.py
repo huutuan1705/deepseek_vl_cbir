@@ -63,7 +63,7 @@ if __name__ == "__main__":
         model.train()
         losses = []
         cosine_max = -100000
-        for _, batch in enumerate(tqdm(train_loader, dynamic_ncols=True, ncols=100)):
+        for _, batch in enumerate(tqdm(train_loader, dynamic_ncols=True, ncols=100, leave=True, position=0)):
             model.train()
             pos_pixel_values, neg_pixel_values, input_ids, attention_mask = batch[0], batch[1], batch[2], batch[3] 
             pos_pixel_values = pos_pixel_values.to(device)
