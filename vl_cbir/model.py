@@ -4,6 +4,9 @@ import torch.nn.functional as F
 
 from transformers import SiglipVisionModel, AutoModel
 
+vision_encoder = SiglipVisionModel.from_pretrained("google/siglip-base-patch16-224")
+text_encoder = AutoModel.from_pretrained("microsoft/deberta-v3-base")
+
 class MLPProjection(nn.Module):
     def __init__(self, input_dim=768, output_dim=64):
         super(MLPProjection, self).__init__()
@@ -19,8 +22,8 @@ class VLM(nn.Module):
     def __init__(self, args):
         super(VLM, self).__init__()
         self.args = args
-        self.vision_encoder = SiglipVisionModel.from_pretrained("google/siglip-base-patch16-224")
-        self.text_encoder = AutoModel.from_pretrained("microsoft/deberta-v3-base")
+        self.vision_encoder = vision_encoder
+        self.text_encoder = text_encoder
         self.img_linear = MLPProjection(output_dim=self.args.output_dim)
         self.text_linear = MLPProjection(output_dim=self.args.output_dim)
         
