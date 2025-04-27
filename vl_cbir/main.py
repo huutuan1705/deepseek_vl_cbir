@@ -2,7 +2,8 @@ import torch
 import argparse
 import torch.nn.functional as F 
 
-from tqdm import tqdm
+from tqdm.auto import tqdm
+import sys
 from torch.cuda.amp import GradScaler
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
@@ -62,7 +63,7 @@ if __name__ == "__main__":
         model.train()
         losses = []
         cosine_max = -100000
-        for _, (pos_pixel_values, neg_pixel_values, input_ids, attention_mask) in enumerate(tqdm(train_loader, dynamic_ncols=True, ncols=100)):
+        for _, (pos_pixel_values, neg_pixel_values, input_ids, attention_mask) in enumerate(tqdm(train_loader, dynamic_ncols=True, ncols=100, file=sys.stdout)):
             model.train()
             pos_pixel_values = pos_pixel_values.to(device)
             neg_pixel_values = neg_pixel_values.to(device)
