@@ -62,8 +62,9 @@ if __name__ == "__main__":
         model.train()
         losses = []
         cosine_max = -100000
-        for _, (pos_pixel_values, neg_pixel_values, input_ids, attention_mask) in enumerate(tqdm(train_loader, dynamic_ncols=True, ncols=100)):
+        for _, batch in enumerate(tqdm(train_loader, dynamic_ncols=True, ncols=100)):
             model.train()
+            pos_pixel_values, neg_pixel_values, input_ids, attention_mask = batch[0], batch[1], batch[2], batch[3] 
             pos_pixel_values = pos_pixel_values.to(device)
             neg_pixel_values = neg_pixel_values.to(device)
             input_ids = input_ids.to(device)
@@ -72,11 +73,10 @@ if __name__ == "__main__":
             
             loss = loss_fn(pos_image_proj, text_proj, neg_image_proj)
             losses.append(loss.item())
-            loss.backward()
             optimizer.zero_grad()
-            # scaler.scale(loss).backward()
-            # scaler.step(optimizer)
-            # scaler.update()
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
         
         cosine_mean = evaluate(model, test_loader)   
         loss_mean = sum(losses) / len(losses)
