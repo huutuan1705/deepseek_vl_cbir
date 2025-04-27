@@ -5,14 +5,28 @@ from tqdm import tqdm
 from torch.cuda.amp import GradScaler
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
+from torch.nn import TripletMarginLoss
 from uitls import get_dataloader
 from model import VLM
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def evaluate(model, args):
+def evaluate(model, test_loader):
     model.eval()
-    return
+    test_cosine = []
+    with torch.no_grad():
+        for _, (pos_pixel_values, neg_pixel_values, input_ids, attention_mask) in enumerate(tqdm(test_loader)):
+            pos_pixel_values = pos_pixel_values.to(device)
+            neg_pixel_values = neg_pixel_values.to(device)
+            input_ids = input_ids.to(device)
+            attention_mask = attention_mask.to(device)
+            image_proj, _, text_proj = model(pos_pixel_values, neg_pixel_values, input_ids, attention_mask)
+            cosine_similarity_mean = (image_proj*text_proj).sum(dim=1).mean()
+            test_cosine.append(cosine_similarity_mean)
+            
+    cosine_mean = sum(test_cosine) / len(test_cosine)
+    
+    return cosine_mean
 
 if __name__ == "__main__":
     parsers = argparse.ArgumentParser(description='Large vision language for caption based image retrieval')
@@ -34,5 +48,35 @@ if __name__ == "__main__":
     scaler = GradScaler()
     
     for epoch in range(args.epochs):
+        print(f"Epoch: {epoch+1} / {args.epochs}")
         model.train()
-    
+        losses = []
+        cosine_max = -100000
+        for _, (pos_pixel_values, neg_pixel_values, input_ids, attention_mask) in enumerate(tqdm(train_loader)):
+            model.train()
+            pos_pixel_values = pos_pixel_values.to(device)
+            neg_pixel_values = neg_pixel_values.to(device)
+            input_ids = input_ids.to(device)
+            attention_mask = attention_mask.to(device)
+            pos_image_proj, neg_image_proj, text_proj = model(pos_pixel_values, neg_pixel_values, input_ids, attention_mask)
+            
+            loss = TripletMarginLoss(pos_image_proj, text_proj, neg_image_proj)
+            losses.append(loss.item())
+            optimizer.zero_grad()
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+        
+        cosine_mean = evaluate(model, test_loader)   
+        loss_mean = sum(losses) / len(losses)
+        print('Training loss:       {:.4f}'.format(loss_mean))
+        print('Test Cosine mean:    {:.4f}'.format(cosine_mean))
+        
+        if cosine_mean >= cosine_max:
+            cosine_max = cosine_mean
+            best_checkpoint = 'best_model.pth'
+            torch.save(model, best_checkpoint)
+            print(f"Best model at epoch {epoch+1}")
+            
+        last_checkpoint = 'last_model.pth'
+        torch.save(model, last_checkpoint)

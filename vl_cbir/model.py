@@ -39,3 +39,4 @@ class VLM(nn.Module):
         text_proj = self.text_linear(text_features)
         
         return image_pos_proj, image_neg_proj, text_proj
+    

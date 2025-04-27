@@ -23,6 +23,17 @@ def collate_fn(batch):
     return pos_image_inputs['pixel_values'], neg_image_inputs['pixel_values'], \
                 text_inputs['input_ids'], text_inputs['attention_mask']
 
+def get_dataloader(args):
+    dataset_train = FlickrDataset(args, mode="train")
+    dataset_test = FlickrDataset(args, mode="test")
+    dataset_search = FlickrDataset(args, mode="search")
+    
+    train_loader = DataLoader(dataset_train, batch_size=args.batch_size, collate_fn=collate_fn)
+    test_loader = DataLoader(dataset_test, batch_size=args.batch_size, collate_fn=collate_fn)
+    search_loader = DataLoader(dataset_search, batch_size=args.batch_size, collate_fn=collate_fn)
+    
+    return train_loader, test_loader, search_loader
+
 def get_transform(mode):
     if mode == 'train':
         transform_list = [
@@ -41,13 +52,3 @@ def get_transform(mode):
         
     return transforms.Compose(transform_list)
 
-def get_dataloader(args):
-    dataset_train = FlickrDataset(args, mode="train")
-    dataset_test = FlickrDataset(args, mode="test")
-    dataset_search = FlickrDataset(args, mode="search")
-    
-    train_loader = DataLoader(dataset_train, batch_size=args.batch_size)
-    test_loader = DataLoader(dataset_test, batch_size=args.batch_size)
-    search_loader = DataLoader(dataset_search, batch_size=args.batch_size)
-    
-    return train_loader, test_loader, search_loader
