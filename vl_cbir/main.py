@@ -52,6 +52,7 @@ if __name__ == "__main__":
     optimizer = AdamW(model.parameters(), lr=args.lr)
     scheduler = CosineAnnealingLR(optimizer=optimizer, T_max=args.t_max)
     scaler = GradScaler()
+    loss_fn = TripletMarginLoss(margin=args.margin)
     
     for epoch in range(args.epochs):
         print(f"Epoch: {epoch+1} / {args.epochs}")
@@ -66,7 +67,7 @@ if __name__ == "__main__":
             attention_mask = attention_mask.to(device)
             pos_image_proj, neg_image_proj, text_proj = model(pos_pixel_values, neg_pixel_values, input_ids, attention_mask)
             
-            loss = TripletMarginLoss(pos_image_proj, text_proj, neg_image_proj)
+            loss = loss_fn(pos_image_proj, text_proj, neg_image_proj)
             losses.append(loss.item())
             optimizer.zero_grad()
             scaler.scale(loss).backward()
