@@ -83,7 +83,7 @@ if __name__ == "__main__":
         if cosine_mean >= cosine_max:
             cosine_max = cosine_mean
             best_checkpoint = 'best_model.pth'
-            torch.save(model, best_checkpoint)
+            torch.save(model.state_dict(), best_checkpoint)
             print(f"Best model at epoch {epoch+1}")
             
         last_checkpoint = 'last_model.pth'

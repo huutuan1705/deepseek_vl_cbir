@@ -13,9 +13,9 @@ if __name__ == "__main__":
     parsers.add_argument('--caption', type=str, default="A cat is sitting down")
 
     args = parsers.parse_args()
-    model = VLM(args)
+    model = torch.load(args.pretrained)
     model.to(device)
-    model.load_state_dict(torch.load(args.pretrained))
+    # model.load_state_dict(torch.load(args.pretrained))
     
     image = load_image_from_url(args.url)
     caption = args.caption
