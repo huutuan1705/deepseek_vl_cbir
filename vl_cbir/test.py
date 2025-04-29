@@ -15,7 +15,7 @@ if __name__ == "__main__":
     args = parsers.parse_args()
     model = VLM(args)
     model.to(device)
-    model.load_state_dict(args.pretrained)
+    model.load_state_dict(torch.load(args.pretrained))
     
     image = load_image_from_url(args.url)
     caption = args.caption
