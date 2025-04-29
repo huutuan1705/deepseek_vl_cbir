@@ -93,10 +93,10 @@ if __name__ == "__main__":
         last_checkpoint = 'last_model.pth'
         torch.save(model, last_checkpoint)
         
-        image = load_image_from_url(args.url)
-        caption = args.caption
+        # image = load_image_from_url(args.url)
+        # caption = args.caption
         
-        image_vector = find_caption(image, model)
-        caption_vector = find_image(caption, model)
-        similarity = torch.cosine_similarity(image_vector, caption_vector)
-        print(f"Cosine similarity giữa ảnh và caption: {similarity.item()}")
+        # image_vector = find_caption(image, model)
+        # caption_vector = find_image(caption, model)
+        # similarity = torch.cosine_similarity(image_vector, caption_vector)
+        # print(f"Cosine similarity giữa ảnh và caption: {similarity.item()}")

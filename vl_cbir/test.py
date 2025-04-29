@@ -10,7 +10,7 @@ if __name__ == "__main__":
     parsers.add_argument('--output_dim', type=int, default=64)
     parsers.add_argument('--pretrained', type=str, default="./../")
     parsers.add_argument('--url', type=str, default="https://cdn.shopify.com/s/files/1/0624/1746/9697/files/siberian-husky-100800827-2000-9449ca147e0e4b819bce5189c2411188_600x600.jpg?v=1690185264")
-    parsers.add_argument('--caption', type=str, default="A cat is sitting down")
+    parsers.add_argument('--caption', type=str, default="A dog is playing with ball")
 
     args = parsers.parse_args()
     model = VLM(args)
