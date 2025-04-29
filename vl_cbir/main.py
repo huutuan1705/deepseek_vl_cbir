@@ -7,7 +7,7 @@ from torch.cuda.amp import GradScaler
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.nn import TripletMarginLoss
-from uitls import get_dataloader
+from uitls import get_dataloader, load_image_from_url, find_caption, find_image
 from model import VLM
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -43,6 +43,10 @@ if __name__ == "__main__":
     parsers.add_argument('--train_size', type=int, default=15000)
     parsers.add_argument('--test_size', type=int, default=4000)
     parsers.add_argument('--output_dim', type=int, default=64)
+    
+    parsers.add_argument('--pretrained', type=str, default="./../")
+    parsers.add_argument('--url', type=str, default="https://cdn.shopify.com/s/files/1/0624/1746/9697/files/siberian-husky-100800827-2000-9449ca147e0e4b819bce5189c2411188_600x600.jpg?v=1690185264")
+    parsers.add_argument('--caption', type=str, default="A cat is sitting down")
     
     args = parsers.parse_args()
     train_loader, test_loader, search_loader = get_dataloader(args)
@@ -88,3 +92,11 @@ if __name__ == "__main__":
             
         last_checkpoint = 'last_model.pth'
         torch.save(model, last_checkpoint)
+        
+        image = load_image_from_url(args.url)
+        caption = args.caption
+        
+        image_vector = find_caption(image, model)
+        caption_vector = find_image(caption, model)
+        similarity = torch.cosine_similarity(image_vector, caption_vector)
+        print(f"Cosine similarity giữa ảnh và caption: {similarity.item()}")
