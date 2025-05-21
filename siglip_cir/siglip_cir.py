@@ -3,10 +3,15 @@ import torch.nn.functional as F
 
 from torch import nn
 from transformers import SiglipVisionModel,  AutoModel, AutoTokenizer
+from transformers import DebertaV2Config, DebertaV2Model, DebertaV2ForMaskedLM
 
 visual_encoder = SiglipVisionModel.from_pretrained("google/siglip-base-patch16-224")
 text_encoder = AutoModel.from_pretrained("microsoft/deberta-v3-base")
 deberta_tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-v3-base")
+
+config = DebertaV2Config.from_pretrained("microsoft/deberta-v3-base")
+config.is_decoder = True
+config.add_cross_attention = True
 
 def init_tokenizer():
     deberta_tokenizer.add_special_tokens({'bos_token': '[DEC]'})
@@ -18,7 +23,7 @@ class Siglip_Retrieval(nn.Module):
     def __init__(self, args):
         super(Siglip_Retrieval, self).__init__()
         self.visual_encoder = visual_encoder
-        self.text_encoder = text_encoder
+        self.text_encoder = DebertaV2Model(config)
         
         self.vision_proj = nn.Linear(args.img_feature_size, args.embed_dim)  # 768 -> 256
         self.text_proj = nn.Linear(args.text_feature_size, args.embed_dim)  # 768 -> 256
