@@ -1,10 +1,4 @@
-import os
-from models import CIRPlus
-import multiprocessing
-from argparse import ArgumentParser
 from operator import itemgetter
-from pathlib import Path
-from statistics import mean
 from typing import List, Tuple
 
 import numpy as np
@@ -13,8 +7,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from datetime import datetime
-import time
-from siglip_cir.datasets import squarepad_transform, CIRDataset, targetpad_transform
+from siglip_cir.datasets import CIRDataset
 from siglip_cir.utils import extract_index_features, collate_fn, device
 
 def compute_fiq_val_metrics(relative_val_dataset: CIRDataset,
