@@ -6,7 +6,7 @@ from transformers import SiglipVisionModel,  AutoModel, AutoTokenizer
 from transformers import DebertaV2Config, DebertaV2Model, DebertaV2ForMaskedLM
 
 visual_encoder = SiglipVisionModel.from_pretrained("google/siglip-base-patch16-224")
-text_encoder = AutoModel.from_pretrained("microsoft/deberta-v3-base")
+# text_encoder = AutoModel.from_pretrained("microsoft/deberta-v3-base")
 deberta_tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-v3-base")
 
 config = DebertaV2Config.from_pretrained("microsoft/deberta-v3-base")
@@ -24,6 +24,7 @@ class Siglip_Retrieval(nn.Module):
         super(Siglip_Retrieval, self).__init__()
         self.visual_encoder = visual_encoder
         self.text_encoder = DebertaV2Model(config)
+        self.tokenizer = init_tokenizer()
         
         self.vision_proj = nn.Linear(args.img_feature_size, args.embed_dim)  # 768 -> 256
         self.text_proj = nn.Linear(args.text_feature_size, args.embed_dim)  # 768 -> 256
