@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 import torch.nn.functional as F
 from siglip_cir.datasets import targetpad_transform, CIRDataset
-from utils import collate_fn
+from siglip_cir.utils import collate_fn
 from siglip_cir.siglip_cir import Siglip_Retrieval
 
 class CIRPlus(nn.Module):
