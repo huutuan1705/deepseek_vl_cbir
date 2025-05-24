@@ -13,7 +13,7 @@ from utils import collate_fn
 from siglip_cir.siglip_cir import Siglip_Retrieval
 
 class CIRPlus(nn.Module):
-    def __init__(self, args, blip_model_name, tau=0.01,
+    def __init__(self, args, tau=0.01,
                  transform="targetpad", target_ratio=1.25, encoder='both',
                  device=torch.device('cuda'), plus=False):
         super().__init__()

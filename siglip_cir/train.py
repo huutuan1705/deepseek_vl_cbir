@@ -38,7 +38,7 @@ def main(args):
         training_path.mkdir(exist_ok=True, parents=True)
     print("training_path:", training_path)
 
-    model = CIRPlus(args.blip_model_name, tau=args.tau, transform=args.transform,
+    model = CIRPlus(args, tau=args.tau, transform=args.transform,
                     device=device, plus=args.plus).to(device)
     if args.model_path:
         model.load_ckpt(args.model_path, True)
@@ -194,3 +194,58 @@ def main(args):
                     save_model('best', epoch, model, training_path)
     if args.nni:
         nni.report_final_result({'default': best_score})
+        
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument("--dataset", type=str, required=True, choices=['fiq', 'cirr'],
+                        help="should be either 'cirr' or 'fiq'")
+    parser.add_argument("--num-epochs", default=5, type=int, help="number training epochs")
+    parser.add_argument("--blip-model-name", default="/root_path/models/blip/model_base.pth", type=str,
+                        help="CLIP model to use, e.g 'RN50', 'RN50x4','ViT-B/16")
+    parser.add_argument("--learning-rate", default=5e-6, type=float, help="Learning rate")
+    parser.add_argument("--batch-size", default=128, type=int, help="Batch size")
+    parser.add_argument("--validation-frequency", default=1, type=int, help="Validation frequency expressed in epochs")
+    parser.add_argument("--target-ratio", default=1.25, type=float, help="TargetPad target ratio")
+    parser.add_argument("--transform", default="targetpad", type=str,
+                        help="Preprocess pipeline, should be in ['clip', 'squarepad', 'targetpad'] ")
+    parser.add_argument("--output_path", default='', help='set the output path of models and log')
+    parser.add_argument("--tau", default=0.03, type=float)
+    parser.add_argument("--dress_types", default='dress,shirt,toptee')
+    parser.add_argument("--debug", action='store_true')
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--data_path", default='')
+    parser.add_argument("--use_bank", action='store_true')
+    parser.add_argument("--model_path", type=str)
+    parser.add_argument("--reload_bank", action='store_true')
+    parser.add_argument("--device", default='0')
+    parser.add_argument("--bank_path", default='')
+    parser.add_argument("--nni", action='store_true')
+    parser.add_argument("--plus", action='store_true', help='whether use additional data')
+    parser.add_argument("--llmcap", action='store_true', help='whether use llm caption')
+
+    args = parser.parse_args()
+    if args.data_path == '':
+        if args.dataset == 'fiq':
+            args.data_path = 'fashionIQ_dataset'
+        else:
+            args.data_path = 'cirr_dataset'
+    device = torch.device(f'cuda:{args.device}')
+    args.dress_types = args.dress_types.split(',')
+    seed = args.seed
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)  # Numpy module.
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = False
+    if args.nni:
+        import nni
+        from nni.utils import merge_parameter
+
+        nni_args = nni.get_next_parameter()
+        args = merge_parameter(args, nni_args)
+    print('Arguments:')
+    for k in args.__dict__.keys():
+        print('    ', k, ':', str(args.__dict__[k]))
+    main(args)
