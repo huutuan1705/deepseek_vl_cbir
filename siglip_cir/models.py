@@ -3,8 +3,6 @@ import multiprocessing
 import os.path
 import torch
 from torch import nn
-from torch.autograd import Variable
-from torch.utils.checkpoint import checkpoint
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 import torch.nn.functional as F

@@ -2,8 +2,8 @@ import torch
 import torch.nn.functional as F
 
 from torch import nn
-from transformers import SiglipVisionModel,  AutoModel, AutoTokenizer
-from transformers import DebertaV2Config, DebertaV2Model, DebertaV2ForMaskedLM
+from transformers import SiglipVisionModel, AutoTokenizer
+from transformers import DebertaV2Config, DebertaV2Model
 
 visual_encoder = SiglipVisionModel.from_pretrained("google/siglip-base-patch16-224")
 # text_encoder = AutoModel.from_pretrained("microsoft/deberta-v3-base")
