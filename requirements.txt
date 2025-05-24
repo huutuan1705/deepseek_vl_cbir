@@ -1,0 +1,12 @@
+nni==3.0
+omegaconf
+iopath
+timm
+decord
+webdataset
+opencv-python
+fairscale
+einops
+scikit-image
+spacy
+pycocoevalcap
