@@ -6,7 +6,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from datasets import CIRDataset
+from siglip_cir.datasets import CIRDataset
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
