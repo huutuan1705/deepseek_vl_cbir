@@ -204,6 +204,9 @@ if __name__ == '__main__':
                         help="CLIP model to use, e.g 'RN50', 'RN50x4','ViT-B/16")
     parser.add_argument("--learning-rate", default=5e-6, type=float, help="Learning rate")
     parser.add_argument("--batch-size", default=128, type=int, help="Batch size")
+    parser.add_argument("--img_feature_size", default=768, type=int, help="img_feature_size")
+    parser.add_argument("--text_feature_size", default=768, type=int, help="text_feature_size")
+    parser.add_argument("--embed_dim", default=256, type=int, help="img_feature_size")
     parser.add_argument("--validation-frequency", default=1, type=int, help="Validation frequency expressed in epochs")
     parser.add_argument("--target-ratio", default=1.25, type=float, help="TargetPad target ratio")
     parser.add_argument("--transform", default="targetpad", type=str,
